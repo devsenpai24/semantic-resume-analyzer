@@ -1,0 +1,11 @@
+streamlit
+pymupdf
+spacy
+sentence-transformers
+scikit-learn
+torch
+transformers
+groq
+python-dotenv
+numpy
+pandas
