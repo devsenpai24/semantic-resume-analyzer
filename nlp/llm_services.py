@@ -1,11 +1,41 @@
 import json
 import os
-from groq import Groq
+
+import streamlit as st
 from dotenv import load_dotenv
+from groq import Groq, GroqError
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+_client = None
+
+
+def get_groq_client():
+    """Create the Groq client lazily; never at module import time."""
+    global _client
+    if _client is not None:
+        return _client
+
+    api_key = None
+    try:
+        api_key = st.secrets["GROQ_API_KEY"]
+    except (KeyError, FileNotFoundError, AttributeError):
+        api_key = os.getenv("GROQ_API_KEY")
+
+    if not api_key:
+        st.error(
+            "GROQ_API_KEY is missing. Add it in Streamlit Cloud → "
+            "Manage app → Settings → Secrets:\n\n"
+            'GROQ_API_KEY = "your_key_here"'
+        )
+        return None
+
+    try:
+        _client = Groq(api_key=api_key)
+        return _client
+    except GroqError as e:
+        st.error(f"Failed to initialize Groq client: {e}")
+        return None
 
 
 def get_resume_suggestions_json(
@@ -46,6 +76,18 @@ Rules:
 - Rewritten bullets should improve wording only.
 - Keep feedback concise and useful.
 """
+
+    client = get_groq_client()
+    if client is None:
+        return {
+            "overall_feedback": "AI suggestions are unavailable.",
+            "missing_keywords": missing_skills,
+            "top_improvements": [
+                "Configure GROQ_API_KEY in Streamlit secrets to enable AI suggestions."
+            ],
+            "rewritten_bullets": [],
+            "final_advice": "NLP scoring still works; only Groq suggestions need the API key.",
+        }
 
     try:
         response = client.chat.completions.create(
