@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 *.pdf
 .streamlit/
+node_modules/
+dist/
+.vite/

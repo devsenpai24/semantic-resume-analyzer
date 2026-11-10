@@ -1,359 +1,156 @@
-# Scorify 🚀
-### AI-Powered Resume Analyzer & Job Match Scoring System
+# SynapCV ⚡
+### Neural Resume Intelligence & ATS Job Match Scoring System
 
-Scorify is an NLP-powered resume analysis platform that compares a candidate's resume against a job description, calculates a match score, identifies missing skills, performs semantic similarity analysis, and generates AI-powered improvement suggestions using Groq LLM.
-
----
-
-## 📌 Features
-
-### 📄 Resume Parsing
-- Extract text from PDF resumes using PyMuPDF
-- Supports multi-page resumes
-- Handles ATS-friendly and standard resume formats
-
-### 🧹 Text Cleaning
-- Lowercase normalization
-- Special character removal
-- Whitespace normalization
-- NLP-ready preprocessing
-
-### 🎯 Skill Extraction
-- Rule-based NLP skill extraction
-- Skill alias normalization
-- Detects:
-  - Programming Languages
-  - Frameworks
-  - Databases
-  - AI/ML Technologies
-  - Cloud & DevOps Tools
-
-### 📊 Skill Gap Analysis
-Identifies:
-- Matched Skills
-- Missing Skills
-- Additional Skills
-- Skill Match Percentage
-
-### 🧠 Semantic Matching
-Uses Sentence Transformers to:
-- Compare resume meaning with job description
-- Measure contextual similarity
-- Generate semantic match score
-
-### 🏆 Final Resume Score
-Combines:
-- Skill Match Score
-- Semantic Similarity Score
-
-Produces:
-- Final ATS Score
-- Resume Fit Label
-
-### 🤖 AI Suggestions (Groq)
-Provides:
-- Resume improvement suggestions
-- Missing keyword recommendations
-- ATS optimization tips
-- Resume bullet point rewrites
+**SynapCV** is an enterprise-grade NLP resume analysis platform that evaluates candidate resumes against target job descriptions. It calculates dual-layer alignment scores (hard skill matrix + deep semantic embeddings), identifies missing competency gaps, and produces recruiter-grade ATS optimizations powered by Groq LLM.
 
 ---
 
-## 🏗️ Project Architecture
+## 💎 Design Philosophy & Frontend
+Built without AI slop or generic boilerplate templates. Designed with:
+- **Obsidian & Teal Theme**: Deep space dark palette, subtle glowing borders, and clean typography (Inter + JetBrains Mono).
+- **Radial Circular Score Dashboard**: Instant visualization of Overall ATS Alignment, Semantic Resonance, and Skill Coverage.
+- **Categorized Skill Matrix**: Interactive domain filtering (Languages, Frameworks, Cloud & DevOps, AI/ML, Databases).
+- **Recruiter Intelligence Hub**: Quantified STAR-format bullet point rewrites, missing ATS keyword pill cloud with 1-click copy, and executive career verdicts.
+- **Sample Role Presets**: 1-click testing for Full Stack, AI/ML, and Cloud/DevOps engineers.
+- **Dual Frontend Architecture**:
+  1. **Modern React Web App** (`frontend/`): Vite + React 18 + Tailwind CSS + Lucide Icons.
+  2. **FastAPI Engine** (`nlp/api.py`): High-throughput REST API with PyMuPDF & Sentence Transformers.
+  3. **Streamlit App** (`nlp/app.py`): Polished, custom-styled single-file alternative.
 
-```text
-Resume PDF
-    │
-    ▼
-PDF Parser
-    │
-    ▼
-Text Cleaner
-    │
-    ▼
-Skill Extractor
-    │
-    ▼
-Gap Analyzer
-    │
-    ├────────────► Skill Match Score
-    │
-    ▼
-Semantic Matcher
-    │
-    ├────────────► Semantic Score
-    │
-    ▼
-Scorer
-    │
-    ▼
-Final Resume Score
-    │
-    ▼
-Groq AI Suggestions
+---
+
+## 📌 Architecture & Features
+
 ```
+                   ┌───────────────────────────────┐
+                   │    Candidate PDF Resume       │
+                   └──────────────┬────────────────┘
+                                  │ (PyMuPDF / fitz)
+                                  ▼
+                   ┌───────────────────────────────┐
+                   │     Text Cleaning & Norm      │
+                   └──────┬─────────────────┬──────┘
+                          │                 │
+    (Rule-based Regex)    ▼                 ▼    (Sentence Transformers)
+┌───────────────────────────────┐     ┌──────────────────────────────────┐
+│   Skill Extraction Matrix     │     │ 384-d Dense Vector Embeddings    │
+│   (Languages, Cloud, AI...)   │     │ (all-MiniLM-L6-v2)               │
+└──────────────┬────────────────┘     └─────────────────┬────────────────┘
+               │                                        │
+               ▼                                        ▼
+┌───────────────────────────────┐     ┌──────────────────────────────────┐
+│   Skill Match Score (60%)     │     │ Semantic Resonance Score (40%)   │
+└──────────────┬────────────────┘     └─────────────────┬────────────────┘
+               │                                        │
+               └──────────────────┬─────────────────────┘
+                                  ▼
+               ┌───────────────────────────────────────┐
+               │    Final ATS Composite Alignment      │
+               │    = (0.6 * Skill) + (0.4 * Semantic) │
+               └──────────────────┬────────────────────┘
+                                  │
+                                  ▼
+               ┌───────────────────────────────────────┐
+               │ Groq LLM Recruiter Suggestions Hub    │
+               │ (STAR Bullet Rewrites & Missing Keys) │
+               └───────────────────────────────────────┘
+```
+
+### 1. 📄 Resume Parsing
+- Multi-page PDF text extraction via PyMuPDF (`fitz`).
+- Handles complex multi-column and ATS-friendly layouts.
+
+### 2. 🧹 Text Normalization
+- Case normalization, unicode cleanup, and whitespace trimming.
+
+### 3. 🎯 Rule-Based NLP Skill Matrix
+- Normalizes canonical skills and aliases across 5 domains:
+  - **Languages**: Python, TypeScript, Java, C++, Go, etc.
+  - **Frameworks**: React, Redux, Node.js, FastAPI, Django, Flask, etc.
+  - **Cloud & DevOps**: AWS, GCP, Azure, Docker, Kubernetes, Terraform, CI/CD, Git.
+  - **AI / ML**: PyTorch, HuggingFace Transformers, LLMs, Scikit-learn, Spacy, NLP.
+  - **Databases & Data**: PostgreSQL, MongoDB, Redis, Kafka, Elasticsearch, Spark.
+
+### 4. 🧠 Semantic Similarity Matching
+- Computes contextual similarity using `sentence-transformers/all-MiniLM-L6-v2`.
+- Detects conceptual equivalence even when exact keywords differ (e.g. "managed multi-region clusters" matching "Kubernetes cloud infrastructure").
+
+### 5. 🤖 Groq LLM Intelligence Hub
+- Generates targeted executive critique.
+- Extracts missing ATS keywords for instant copy-paste.
+- Rewrites weak resume bullet points into high-impact, quantified STAR achievements.
+
+---
+
+## 🚀 Quickstart Guide
+
+### 1. Modern React Web Application (Recommended)
+
+#### Terminal 1 — Start the FastAPI Engine:
+```bash
+python3 nlp/api.py
+# Runs on http://localhost:8000
+```
+
+#### Terminal 2 — Start the Vite Frontend:
+```bash
+cd frontend
+npm run dev
+# Open http://localhost:5173 in your browser
+```
+
+---
+
+### 2. Streamlit UI (Alternative)
+
+```bash
+streamlit run nlp/app.py
+```
+
+---
+
+## 🔑 Groq API Configuration (Optional)
+To enable real-time Groq LLM suggestions, create a `.env` file in the project root:
+```env
+GROQ_API_KEY="your-groq-api-key-here"
+```
+*(If no API key is provided, SynapCV automatically uses its built-in rule-based intelligence fallback so your workflow is never interrupted).*
 
 ---
 
 ## 📂 Project Structure
 
-```text
-scorify/
+```
+SynapCV/
+├── frontend/                     # Modern React + Vite + Tailwind Web Application
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header.jsx        # Navigation, Preset Selector & System Health
+│   │   │   ├── ResumeDropzone.jsx # PyMuPDF Drag-and-Drop & Text Inspector
+│   │   │   ├── JobDescriptionEditor.jsx # JD Editor & Quick Role Presets
+│   │   │   ├── ScoreDashboard.jsx # Radial Gauge & ATS Fit Breakdown
+│   │   │   ├── SkillIntelligence.jsx # Categorized Skill Gap Matrix
+│   │   │   ├── SemanticDeepDive.jsx # Vector Embedding Similarity Insights
+│   │   │   └── AIOptimizerHub.jsx # Groq STAR Rewrites & Keyword Cloud
+│   │   ├── data/presets.js       # Real-world candidate profiles & job descriptions
+│   │   ├── utils/analyzer.js     # NLP extractor & client fallback logic
+│   │   ├── App.jsx               # Master state & layout
+│   │   └── index.css             # Obsidian & Teal design system
+│   ├── tailwind.config.js
+│   └── package.json
 │
-├── backend/
+├── nlp/                          # Python NLP Core Engine
+│   ├── api.py                    # High-throughput FastAPI REST API
+│   ├── app.py                    # Upgraded Streamlit interface
+│   ├── resume_analyzer.py        # Core orchestration pipeline
+│   ├── semantic_matcher.py       # SentenceTransformers MiniLM-L6
+│   ├── skill_extractor.py        # Rule-based NLP skill dictionary
+│   ├── gap_analyzer.py           # Skill gap comparative matrix
+│   ├── scorer.py                 # Weighted composite score formula
+│   ├── pdf_parser.py             # PyMuPDF PDF parser
+│   ├── text_cleaner.py           # Preprocessing & normalization
+│   ├── llm_services.py           # Groq LLM prompt & schema parser
+│   └── requirements.txt
 │
-├── frontend/
-│
-├── nlp/
-│   ├── pdf_parser.py
-│   ├── text_cleaner.py
-│   ├── skill_extractor.py
-│   ├── gap_analyzer.py
-│   ├── semantic_matcher.py
-│   ├── scorer.py
-│   ├── groq_suggester.py
-│   └── test.py
-│
-├── .env
-├── requirements.txt
 └── README.md
 ```
-
----
-
-## ⚙️ Tech Stack
-
-### Backend
-- Python
-- FastAPI
-
-### NLP
-- Sentence Transformers
-- spaCy
-- Regex Processing
-
-### PDF Processing
-- PyMuPDF
-
-### AI
-- Groq API
-- Llama 3.3 70B
-
-### Frontend
-- React.js
-- Tailwind CSS
-
----
-
-## 📦 Installation
-
-### Clone Repository
-
-```bash
-git clone https://github.com/yourusername/scorify.git
-cd scorify
-```
-
-### Create Virtual Environment
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 📦 Requirements
-
-```txt
-pymupdf
-sentence-transformers
-torch
-scikit-learn
-spacy
-fastapi
-uvicorn
-python-multipart
-groq
-python-dotenv
-```
-
----
-
-## 🔑 Environment Variables
-
-Create a `.env` file:
-
-```env
-GROQ_API_KEY=your_groq_api_key
-```
-
----
-
-## 🚀 Running the Project
-
-### Run NLP Testing
-
-```bash
-python nlp/test.py
-```
-
----
-
-## Example Job Description
-
-```text
-We are hiring a Software Developer Intern with skills in:
-
-Python
-React
-FastAPI
-SQL
-Docker
-Git
-REST APIs
-
-Experience in Machine Learning and NLP is preferred.
-```
-
----
-
-## Example Output
-
-### Skill Match Analysis
-
-```json
-{
-  "matched_skills": [
-    "python",
-    "react",
-    "sql",
-    "git"
-  ],
-  "missing_skills": [
-    "docker",
-    "fastapi",
-    "nlp"
-  ],
-  "skill_match_score": 57.14
-}
-```
-
-### Semantic Match
-
-```json
-{
-  "semantic_score": 71.52,
-  "semantic_label": "Moderate Match"
-}
-```
-
-### Final Score
-
-```json
-{
-  "final_score": 63.92,
-  "final_label": "Good Fit"
-}
-```
-
----
-
-## Future Improvements
-
-### ATS Analysis
-- Resume formatting score
-- Section completeness check
-- Contact information validation
-
-### Advanced NLP
-- Named Entity Recognition
-- Experience extraction
-- Education extraction
-- Certification extraction
-
-### AI Enhancements
-- Resume rewriting
-- Cover letter generation
-- Interview question generation
-
-### Dashboard
-- Resume upload UI
-- Score visualization
-- Downloadable reports
-
----
-
-## Roadmap
-
-### Phase 1
-- PDF Parsing ✅
-- Text Cleaning ✅
-- Skill Extraction ✅
-
-### Phase 2
-- Skill Matching ✅
-- Semantic Similarity ✅
-- Final Scoring ✅
-
-### Phase 3
-- Groq Suggestions ✅
-- FastAPI Integration ⏳
-
-### Phase 4
-- React Frontend ⏳
-- Authentication ⏳
-- Dashboard ⏳
-
----
-
-## Sample Workflow
-
-```text
-Upload Resume
-      │
-      ▼
-Extract PDF Text
-      │
-      ▼
-Clean Resume Data
-      │
-      ▼
-Extract Skills
-      │
-      ▼
-Compare with Job Description
-      │
-      ▼
-Calculate Match Score
-      │
-      ▼
-Generate AI Suggestions
-      │
-      ▼
-Show Results Dashboard
-```
-
----
-
-## Author
-
-**Dev Giri**
-
-Computer Science Engineer | Full Stack Developer | AI Enthusiast
-
----
-
-## License
-
-MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.
