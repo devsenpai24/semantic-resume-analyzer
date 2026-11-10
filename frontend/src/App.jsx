@@ -10,6 +10,8 @@ import { PRESETS } from './data/presets';
 import { computeClientFallback } from './utils/analyzer';
 import { Play, Sparkles, AlertCircle, ArrowDown } from 'lucide-react';
 
+export const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 export default function App() {
   const [file, setFile] = useState(null);
   const [resumeText, setResumeText] = useState(PRESETS[0].resumeText);
@@ -22,7 +24,7 @@ export default function App() {
 
   // Check backend health on mount
   useEffect(() => {
-    fetch('/api/health')
+    fetch(`${API_BASE}/api/health`)
       .then(res => res.json())
       .then(data => {
         setBackendOnline(true);
@@ -80,7 +82,7 @@ export default function App() {
         }
         formData.append('job_description', jobDescription);
 
-        const response = await fetch('/api/analyze', {
+        const response = await fetch(`${API_BASE}/api/analyze`, {
           method: 'POST',
           body: formData
         });

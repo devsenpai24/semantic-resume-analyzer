@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, CheckCircle2, AlertCircle, Edit3, X, Eye } from 'lucide-react';
 
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 export default function ResumeDropzone({
   file,
   setFile,
@@ -39,7 +41,7 @@ export default function ResumeDropzone({
       try {
         const formData = new FormData();
         formData.append('file', uploadedFile);
-        const res = await fetch('/api/parse-pdf', {
+        const res = await fetch(`${API_BASE}/api/parse-pdf`, {
           method: 'POST',
           body: formData
         });

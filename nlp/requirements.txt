@@ -1,6 +1,8 @@
-streamlit
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
 pymupdf
-spacy
 sentence-transformers
 scikit-learn
 torch
@@ -9,3 +11,4 @@ groq
 python-dotenv
 numpy
 pandas
+streamlit
